@@ -21,8 +21,8 @@ import (
 	"io"
 	"io/ioutil"
 
-	"github.com/hajimehoshi/ebiten/audio"
-	"github.com/hajimehoshi/ebiten/audio/vorbis/internal/stb"
+	"github.com/hajimehoshi/ebiten/v2/audio"
+	"github.com/hajimehoshi/ebiten/v2/audio/vorbis/internal/stb"
 )
 
 type decoderImpl struct {

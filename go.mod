@@ -1,4 +1,4 @@
-module github.com/hajimehoshi/ebiten
+module github.com/hajimehoshi/ebiten/v2
 
 require (
 	github.com/go-gl/gl v0.0.0-20180407155706-68e253793080

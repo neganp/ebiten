@@ -19,10 +19,10 @@ import (
 	"image/color"
 	"runtime"
 
-	"github.com/hajimehoshi/ebiten/internal/graphics"
-	"github.com/hajimehoshi/ebiten/internal/graphicsutil"
-	"github.com/hajimehoshi/ebiten/internal/opengl"
-	"github.com/hajimehoshi/ebiten/internal/shareable"
+	"github.com/hajimehoshi/ebiten/v2/internal/graphics"
+	"github.com/hajimehoshi/ebiten/v2/internal/graphicsutil"
+	"github.com/hajimehoshi/ebiten/v2/internal/opengl"
+	"github.com/hajimehoshi/ebiten/v2/internal/shareable"
 )
 
 // emptyImage is an empty image used for filling other images with a uniform color.
@@ -153,7 +153,7 @@ func (i *Image) fill(r, g, b, a uint8) {
 //   * All CompositeMode values are same
 //   * All Filter values are same
 //
-// For more performance tips, see https://github.com/hajimehoshi/ebiten/wiki/Performance-Tips.
+// For more performance tips, see https://github.com/hajimehoshi/ebiten/v2/wiki/Performance-Tips.
 //
 // DrawImage always returns nil as of 1.5.0-alpha.
 func (i *Image) DrawImage(img *Image, options *DrawImageOptions) error {

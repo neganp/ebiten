@@ -28,7 +28,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/hajimehoshi/ebiten/internal"
+	"github.com/hajimehoshi/ebiten/v2/internal"
 )
 
 const (

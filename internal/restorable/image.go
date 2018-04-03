@@ -19,11 +19,11 @@ import (
 	"fmt"
 	"image/color"
 
-	"github.com/hajimehoshi/ebiten/internal/affine"
-	"github.com/hajimehoshi/ebiten/internal/graphics"
-	"github.com/hajimehoshi/ebiten/internal/graphicsutil"
-	"github.com/hajimehoshi/ebiten/internal/math"
-	"github.com/hajimehoshi/ebiten/internal/opengl"
+	"github.com/hajimehoshi/ebiten/v2/internal/affine"
+	"github.com/hajimehoshi/ebiten/v2/internal/graphics"
+	"github.com/hajimehoshi/ebiten/v2/internal/graphicsutil"
+	"github.com/hajimehoshi/ebiten/v2/internal/math"
+	"github.com/hajimehoshi/ebiten/v2/internal/opengl"
 )
 
 // drawImageHistoryItem is an item for history of draw-image commands.

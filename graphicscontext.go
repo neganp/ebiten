@@ -15,12 +15,12 @@
 package ebiten
 
 import (
-	"github.com/hajimehoshi/ebiten/internal/clock"
-	"github.com/hajimehoshi/ebiten/internal/graphics"
-	"github.com/hajimehoshi/ebiten/internal/hooks"
-	"github.com/hajimehoshi/ebiten/internal/shareable"
-	"github.com/hajimehoshi/ebiten/internal/ui"
-	"github.com/hajimehoshi/ebiten/internal/web"
+	"github.com/hajimehoshi/ebiten/v2/internal/clock"
+	"github.com/hajimehoshi/ebiten/v2/internal/graphics"
+	"github.com/hajimehoshi/ebiten/v2/internal/hooks"
+	"github.com/hajimehoshi/ebiten/v2/internal/shareable"
+	"github.com/hajimehoshi/ebiten/v2/internal/ui"
+	"github.com/hajimehoshi/ebiten/v2/internal/web"
 )
 
 func newGraphicsContext(f func(*Image) error) *graphicsContext {

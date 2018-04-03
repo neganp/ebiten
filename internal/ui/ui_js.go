@@ -22,10 +22,10 @@ import (
 
 	"github.com/gopherjs/gopherwasm/js"
 
-	"github.com/hajimehoshi/ebiten/internal/devicescale"
-	"github.com/hajimehoshi/ebiten/internal/hooks"
-	"github.com/hajimehoshi/ebiten/internal/input"
-	"github.com/hajimehoshi/ebiten/internal/opengl"
+	"github.com/hajimehoshi/ebiten/v2/internal/devicescale"
+	"github.com/hajimehoshi/ebiten/v2/internal/hooks"
+	"github.com/hajimehoshi/ebiten/v2/internal/input"
+	"github.com/hajimehoshi/ebiten/v2/internal/opengl"
 )
 
 var canvas js.Value

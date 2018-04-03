@@ -17,7 +17,7 @@ package math_test
 import (
 	"testing"
 
-	. "github.com/hajimehoshi/ebiten/internal/math"
+	. "github.com/hajimehoshi/ebiten/v2/internal/math"
 )
 
 func TestNextPowerOf2(t *testing.T) {

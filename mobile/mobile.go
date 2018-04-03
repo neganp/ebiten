@@ -17,13 +17,13 @@
 // This package is used when you use `gomobile bind`.
 // For `gomobile build`, you don't have to use this package.
 //
-// For usage, see https://github.com/hajimehoshi/ebiten/wiki/Mobile, https://github.com/hajimehoshi/ebiten/wiki/Android and https://github.com/hajimehoshi/ebiten/wiki/iOS.
+// For usage, see https://github.com/hajimehoshi/ebiten/v2/wiki/Mobile, https://github.com/hajimehoshi/ebiten/v2/wiki/Android and https://github.com/hajimehoshi/ebiten/v2/wiki/iOS.
 package mobile
 
 import (
 	"sync"
 
-	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 var (
@@ -101,7 +101,7 @@ func Update() error {
 //
 // UpdateTouchesOnAndroid is concurrent-safe.
 //
-// For more details, see https://github.com/hajimehoshi/ebiten/wiki/Android.
+// For more details, see https://github.com/hajimehoshi/ebiten/v2/wiki/Android.
 func UpdateTouchesOnAndroid(action int, id int, x, y int) {
 	mobileMutex.Lock()
 	defer mobileMutex.Unlock()
@@ -145,7 +145,7 @@ func UpdateTouchesOnAndroid(action int, id int, x, y int) {
 //
 // UpdateTouchesOnIOS is concurrent-safe.
 //
-// For more details, see https://github.com/hajimehoshi/ebiten/wiki/iOS.
+// For more details, see https://github.com/hajimehoshi/ebiten/v2/wiki/iOS.
 func UpdateTouchesOnIOS(phase int, ptr int64, x, y int) {
 	mobileMutex.Lock()
 	defer mobileMutex.Unlock()

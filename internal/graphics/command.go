@@ -17,9 +17,9 @@ package graphics
 import (
 	"fmt"
 
-	"github.com/hajimehoshi/ebiten/internal/affine"
-	emath "github.com/hajimehoshi/ebiten/internal/math"
-	"github.com/hajimehoshi/ebiten/internal/opengl"
+	"github.com/hajimehoshi/ebiten/v2/internal/affine"
+	emath "github.com/hajimehoshi/ebiten/v2/internal/math"
+	"github.com/hajimehoshi/ebiten/v2/internal/opengl"
 )
 
 // command represents a drawing command.
