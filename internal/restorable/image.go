@@ -225,6 +225,12 @@ func (i *Image) appendDrawImageHistory(image *Image, vertices []float32, colorm 
 	i.drawImageHistory = append(i.drawImageHistory, item)
 }
 
+func (i *Image) DrawMipmap(dstX, dstY int, src *Image, srcX, srcY, srcW, srcH int, level int) {
+	theImages.makeStaleIfDependingOn(i)
+	i.makeStale()
+	i.image.DrawMipmap(dstX, dstY, src.image, srcX, srcY, srcW, srcH, level)
+}
+
 // At returns a color value at (x, y).
 //
 // Note that this must not be called until context is available.

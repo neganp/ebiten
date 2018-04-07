@@ -184,7 +184,7 @@ func (g *GeoM) Rotate(theta float64) *GeoM {
 	}
 }
 
-func (g *GeoM) det() float64 {
+func (g *GeoM) Det() float64 {
 	if g == nil {
 		return 1
 	}
@@ -192,14 +192,14 @@ func (g *GeoM) det() float64 {
 }
 
 func (g *GeoM) IsInvertible() bool {
-	return g.det() != 0
+	return g.Det() != 0
 }
 
 func (g *GeoM) Invert() *GeoM {
 	if g == nil {
 		return nil
 	}
-	det := g.det()
+	det := g.Det()
 	if det == 0 {
 		panic("affine: g is not invertible")
 	}

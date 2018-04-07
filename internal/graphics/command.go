@@ -18,6 +18,7 @@ import (
 	"fmt"
 
 	"github.com/hajimehoshi/ebiten/internal/affine"
+	"github.com/hajimehoshi/ebiten/internal/graphicsutil"
 	emath "github.com/hajimehoshi/ebiten/internal/math"
 	"github.com/hajimehoshi/ebiten/internal/opengl"
 )
@@ -262,6 +263,41 @@ func (c *drawImageCommand) quadsNum() int {
 	return c.nvertices * opengl.Float.SizeInBytes() / QuadVertexSizeInBytes()
 }
 
+// drawMipmapCommand is a command to create a mipmap image.
+type drawMipmapCommand struct {
+	dst   *Image
+	dstX  int
+	dstY  int
+	src   *Image
+	srcX  int
+	srcY  int
+	srcW  int
+	srcH  int
+	level int
+}
+
+func (c *drawMipmapCommand) Exec(indexOffsetInBytes int) error {
+	pix, err := c.src.Pixels()
+	if err != nil {
+		return err
+	}
+
+	newPix, w, h := graphicsutil.GenerateMipmap(pix, c.srcX, c.srcY, c.srcW, c.srcH, c.level)
+	doReplacePixels(c.dst, newPix, c.dstX, c.dstY, w, h)
+	return nil
+}
+
+func (c *drawMipmapCommand) NumVertices() int {
+	return 0
+}
+
+func (c *drawMipmapCommand) AddNumVertices(n int) {
+}
+
+func (c *drawMipmapCommand) CanMerge(dst, src *Image, color *affine.ColorM, mode opengl.CompositeMode, filter Filter) bool {
+	return false
+}
+
 // replacePixelsCommand represents a command to replace pixels of an image.
 type replacePixelsCommand struct {
 	dst    *Image
@@ -272,9 +308,8 @@ type replacePixelsCommand struct {
 	height int
 }
 
-// Exec executes the replacePixelsCommand.
-func (c *replacePixelsCommand) Exec(indexOffsetInBytes int) error {
-	f, err := c.dst.createFramebufferIfNeeded()
+func doReplacePixels(dst *Image, pix []byte, x, y, width, height int) error {
+	f, err := dst.createFramebufferIfNeeded()
 	if err != nil {
 		return err
 	}
@@ -283,9 +318,14 @@ func (c *replacePixelsCommand) Exec(indexOffsetInBytes int) error {
 	// glFlush is necessary on Android.
 	// glTexSubImage2D didn't work without this hack at least on Nexus 5x and NuAns NEO [Reloaded] (#211).
 	opengl.GetContext().Flush()
-	opengl.GetContext().BindTexture(c.dst.texture.native)
-	opengl.GetContext().TexSubImage2D(c.pixels, c.x, c.y, c.width, c.height)
+	opengl.GetContext().BindTexture(dst.texture.native)
+	opengl.GetContext().TexSubImage2D(pix, x, y, width, height)
 	return nil
+}
+
+// Exec executes the replacePixelsCommand.
+func (c *replacePixelsCommand) Exec(indexOffsetInBytes int) error {
+	return doReplacePixels(c.dst, c.pixels, c.x, c.y, c.width, c.height)
 }
 
 func (c *replacePixelsCommand) NumVertices() int {

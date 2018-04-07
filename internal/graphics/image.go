@@ -116,6 +116,21 @@ func (i *Image) ReplacePixels(p []byte, x, y, width, height int) {
 	theCommandQueue.Enqueue(c)
 }
 
+func (i *Image) DrawMipmap(dstX, dstY int, src *Image, srcX, srcY, srcW, srcH int, level int) {
+	c := &drawMipmapCommand{
+		dst:   i,
+		dstX:  dstX,
+		dstY:  dstY,
+		src:   src,
+		srcX:  srcX,
+		srcY:  srcY,
+		srcW:  srcW,
+		srcH:  srcH,
+		level: level,
+	}
+	theCommandQueue.Enqueue(c)
+}
+
 func (i *Image) IsInvalidated() bool {
 	return !opengl.GetContext().IsTexture(i.texture.native)
 }

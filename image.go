@@ -48,6 +48,8 @@ type Image struct {
 	shareableImage *shareable.Image
 
 	filter Filter
+
+	mipmap map[int]*shareable.Image
 }
 
 func (i *Image) copyCheck() {
@@ -65,6 +67,15 @@ func (i *Image) isDisposed() bool {
 	return i.shareableImage == nil
 }
 
+func (i *Image) disposeMipmap() {
+	if i.mipmap != nil {
+		for _, i := range i.mipmap {
+			i.Dispose()
+		}
+		i.mipmap = nil
+	}
+}
+
 // Clear resets the pixels of the image into 0.
 //
 // When the image is disposed, Clear does nothing.
@@ -75,6 +86,7 @@ func (i *Image) Clear() error {
 	if i.isDisposed() {
 		return nil
 	}
+	i.disposeMipmap()
 	i.fill(0, 0, 0, 0)
 	return nil
 }
@@ -89,6 +101,7 @@ func (i *Image) Fill(clr color.Color) error {
 	if i.isDisposed() {
 		return nil
 	}
+	i.disposeMipmap()
 	r, g, b, a := clr.RGBA()
 	i.fill(uint8(r>>8), uint8(g>>8), uint8(b>>8), uint8(a>>8))
 	return nil
@@ -151,6 +164,7 @@ func (i *Image) DrawImage(img *Image, options *DrawImageOptions) error {
 	if i.isDisposed() {
 		return nil
 	}
+	i.disposeMipmap()
 
 	// Calculate vertices before locking because the user can do anything in
 	// options.ImageParts interface without deadlock (e.g. Call Image functions).
@@ -225,7 +239,26 @@ func (i *Image) DrawImage(img *Image, options *DrawImageOptions) error {
 		filter = graphics.Filter(img.filter)
 	}
 
-	i.shareableImage.DrawImage(img.shareableImage, sx0, sy0, sx1, sy1, geom, options.ColorM.impl, mode, filter)
+	det := math.Abs(geom.Det())
+	if det == 0 {
+		return nil
+	}
+	level := 0
+	if filter == graphics.FilterLinear {
+		for det < 1 && level < 6 {
+			level++
+			det *= 2
+		}
+	}
+	if level == 0 {
+		i.shareableImage.DrawImage(img.shareableImage, sx0, sy0, sx1, sy1, geom, options.ColorM.impl, mode, filter)
+	} else {
+		if _, ok := img.mipmap[level]; !ok {
+			img.mipmap[level] = shareable.NewMipmapImage(img.shareableIamge, level)
+		}
+		// recalc sx0???
+		i.shareableImage.DrawImage(img.mipmap[level], sx0, sy0, sx1, sy1, geom, options.ColorM.impl, mode, filter)
+	}
 	return nil
 }
 
@@ -270,6 +303,10 @@ func (i *Image) Dispose() error {
 	if i.isDisposed() {
 		return nil
 	}
+	for _, img := range i.mipmap {
+		img.Dispose()
+	}
+	i.mipmap = nil
 	i.shareableImage.Dispose()
 	i.shareableImage = nil
 	runtime.SetFinalizer(i, nil)
@@ -292,6 +329,7 @@ func (i *Image) ReplacePixels(p []byte) error {
 	if i.isDisposed() {
 		return nil
 	}
+	i.disposeMipmap()
 	i.shareableImage.ReplacePixels(p)
 	return nil
 }

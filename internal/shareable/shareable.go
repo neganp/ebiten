@@ -21,6 +21,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/internal/affine"
 	"github.com/hajimehoshi/ebiten/internal/graphics"
+	"github.com/hajimehoshi/ebiten/internal/graphicsutil"
 	"github.com/hajimehoshi/ebiten/internal/opengl"
 	"github.com/hajimehoshi/ebiten/internal/packing"
 	"github.com/hajimehoshi/ebiten/internal/restorable"
@@ -222,7 +223,10 @@ func NewImage(width, height int) *Image {
 
 	backendsM.Lock()
 	defer backendsM.Unlock()
+	return newImage(width, height)
+}
 
+func newImage(width, height int) *Image {
 	if width > maxSize || height > maxSize {
 		b := &backend{
 			restorable: restorable.NewImage(width, height, false),
@@ -263,6 +267,18 @@ func NewImage(width, height int) *Image {
 		node:    n,
 	}
 	runtime.SetFinalizer(i, (*Image).Dispose)
+	return i
+}
+
+func NewMipmapImagep(src *Image, level int) *Image {
+	backendsM.Lock()
+	defer backendsM.Unlock()
+
+	x, y, w, h := src.region()
+	dw, dh, _ := graphicsutil.MipmapSize(x, y, level)
+	i := NewImage(dw, dh)
+	dx, dy, _, _ := i.region()
+	i.backend.restorable.DrawMipmap(dx, dy, src.backend.restorable, x, y, w, h, level)
 	return i
 }
 
