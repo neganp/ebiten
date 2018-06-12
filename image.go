@@ -244,6 +244,50 @@ func (i *Image) DrawImage(img *Image, options *DrawImageOptions) error {
 	return nil
 }
 
+type Vertices struct {
+	vertices []float32
+	indices  []uint16
+}
+
+func NewVertices(dst *Image) *Vertices {
+	return &Vertices{
+		//dst: dst,
+	}
+}
+
+func (v *Vertices) AddVertex(dstX, dstY float64) {
+	// Yo, backend size might be changed later!!
+	//bw, bh := dst.BackendSize()
+}
+
+func (v *Vertices) AddTriangleIndices(i0, i1, i2 uint16) {
+	v.indices = append(v.indices, i0, i1, i2)
+}
+
+type DrawTrianglesOptions struct {
+	Vertices      Vertices
+	ColorM        ColorM
+	CompositeMode CompositeMode
+	Filter        Filter
+}
+
+func (i *Image) DrawTriangles(img *Image, options *DrawTrianglesOptions) {
+	if options == nil {
+		options = &DrawTrianglesOptions{}
+	}
+
+	mode := opengl.CompositeMode(options.CompositeMode)
+
+	filter := graphics.FilterNearest
+	if options.Filter != FilterDefault {
+		filter = graphics.Filter(options.Filter)
+	} else if img.filter != FilterDefault {
+		filter = graphics.Filter(img.filter)
+	}
+
+	i.shareableImage.DrawImage(img.shareableImage, options.Vertices.vertices, options.Vertices.indices, options.ColorM.impl, mode, filter)
+}
+
 // Bounds returns the bounds of the image.
 func (i *Image) Bounds() image.Rectangle {
 	w, h := i.Size()
